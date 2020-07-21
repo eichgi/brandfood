@@ -8,6 +8,24 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+import VueRouter from 'vue-router';
+
+Vue.use(VueRouter);
+
+import Menu from "./components/products/Menu";
+
+const router = new VueRouter({
+    mode: 'history',
+    routes: [
+        {
+            path: '/ordenar',
+            name: 'index',
+            component: Menu,
+        },
+    ],
+    base: '/app',
+});
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -29,4 +47,5 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 
 const app = new Vue({
     el: '#app',
+    router,
 });

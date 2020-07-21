@@ -9,8 +9,8 @@ class Product extends Model
     protected $table = 'products';
     protected $fillable = ['name', 'description'];
 
-    public function order()
+    public function orders()
     {
-        return $this->hasOne(Order::class);
+        return $this->belongsToMany(Order::class, 'order_products')->withTimestamps();
     }
 }
