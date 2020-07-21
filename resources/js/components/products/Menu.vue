@@ -69,6 +69,8 @@
 </template>
 
 <script>
+    import Swal from 'sweetalert2';
+
     export default {
         name: "Menu",
         data() {
@@ -82,8 +84,17 @@
         },
         methods: {
             async getProducts() {
-                const products = await axios.get('/api/products');
-                this.products = products.data;
+                try {
+                    const products = await axios.get('/api/products');
+                    this.products = products.data;
+                } catch (error) {
+                    console.log(error);
+                    Swal.fire({
+                        title: 'Error',
+                        icon: 'error',
+                        text: 'No se pueden cargar los productos',
+                    });
+                }
             },
             addToCart(newProduct) {
                 const foundInCart = this.cart.filter(product => newProduct.id === product.id);
@@ -105,12 +116,24 @@
             },
             async createOrder() {
                 try {
-                    const order = await axios.post('/api/orders', {products: this.cart});
-                    console.log(order);
+                    const response = await axios.post('/api/orders', {products: this.cart});
+                    this.clearCart();
+                    Swal.fire({
+                        title: response.data.message,
+                        icon: 'success',
+                    });
                 } catch (error) {
                     console.log(error.response);
+                    Swal.fire({
+                        title: 'Error',
+                        icon: 'error',
+                        text: 'Tu pedido no se puede realizar',
+                    });
                 }
-            }
+            },
+            clearCart() {
+                this.cart = [];
+            },
         }
     }
 </script>
