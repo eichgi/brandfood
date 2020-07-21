@@ -12,15 +12,21 @@ import VueRouter from 'vue-router';
 
 Vue.use(VueRouter);
 
-import Menu from "./components/products/Menu";
+import Menu from "./components/orders/Menu";
+import Orders from "./components/orders/Orders";
 
 const router = new VueRouter({
     mode: 'history',
     routes: [
         {
             path: '/ordenar',
-            name: 'index',
+            name: 'menu',
             component: Menu,
+        },
+        {
+            path: '/pedidos',
+            name: 'orders',
+            component: Orders,
         },
     ],
     base: '/app',

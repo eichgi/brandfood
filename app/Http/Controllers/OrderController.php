@@ -19,9 +19,18 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $order = Order::create();
-        $products_ids = collect($request->products)->pluck('id');
-        $order->products()->attach(Product::find($products_ids));
+
+        collect($request->products)->each(function ($product) use ($order) {
+            $order->products()->attach($product['id'], ['quantity' => $product['quantity']]);
+        });
 
         return response()->json(['status' => 1, 'message' => 'El pedido ha sido realizado'], 200);
+    }
+
+    public function getOrders(Request $request)
+    {
+        $orders = Order::with('products')->orderBy('created_at', 'desc')->limit(10)->get();
+
+        return response()->json(['status' => 1, 'orders' => $orders], 200);
     }
 }
