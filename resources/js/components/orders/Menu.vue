@@ -121,6 +121,7 @@
                     Swal.fire({
                         title: response.data.message,
                         icon: 'success',
+                        timer: 5000,
                     });
                 } catch (error) {
                     console.log(error.response);

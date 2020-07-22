@@ -16,7 +16,7 @@
                             <tbody>
                             <tr v-for="order in orders" :key="order.id">
                                 <td>{{order.id}}</td>
-                                <td>{{order.products.join(',')}}</td>
+                                <td>{{order.products.join(', ')}}</td>
                                 <td>{{order.created_at}}</td>
                             </tr>
                             </tbody>
@@ -41,8 +41,17 @@
         },
         mounted() {
             this.getOrders();
+            this.listenIncomingOrders();
         },
         methods: {
+            listenIncomingOrders() {
+                Echo.channel('orders-channel')
+                    .listen('.new-order', (data) => {
+                        if (data.action === 'reload') {
+                            this.getOrders();
+                        }
+                    });
+            },
             async getOrders() {
                 try {
                     const response = await axios.get('/api/orders');
@@ -55,6 +64,11 @@
                             }),
                             created_at,
                         }
+                    });
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'El listado ha sido actualizado',
+                        timer: 3000,
                     });
                 } catch (error) {
                     console.log(error);

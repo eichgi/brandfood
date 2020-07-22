@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewOrder;
 use App\Order;
 use App\Product;
 use Illuminate\Http\Request;
@@ -24,6 +25,7 @@ class OrderController extends Controller
             $order->products()->attach($product['id'], ['quantity' => $product['quantity']]);
         });
 
+        event(new NewOrder('reload'));
         return response()->json(['status' => 1, 'message' => 'El pedido ha sido realizado'], 200);
     }
 

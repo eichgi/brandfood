@@ -2137,7 +2137,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 sweetalert2__WEBPACK_IMPORTED_MODULE_1___default.a.fire({
                   title: response.data.message,
-                  icon: 'success'
+                  icon: 'success',
+                  timer: 5000
                 });
                 _context2.next = 12;
                 break;
@@ -2228,10 +2229,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   mounted: function mounted() {
     this.getOrders();
+    this.listenIncomingOrders();
   },
   methods: {
-    getOrders: function getOrders() {
+    listenIncomingOrders: function listenIncomingOrders() {
       var _this = this;
+
+      Echo.channel('orders-channel').listen('.new-order', function (data) {
+        if (data.action === 'reload') {
+          _this.getOrders();
+        }
+      });
+    },
+    getOrders: function getOrders() {
+      var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
         var response;
@@ -2245,7 +2256,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 3:
                 response = _context.sent;
-                _this.orders = response.data.orders.map(function (order) {
+                _this2.orders = response.data.orders.map(function (order) {
                   var id = order.id,
                       created_at = order.created_at;
                   return {
@@ -2256,11 +2267,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     created_at: created_at
                   };
                 });
-                _context.next = 11;
+                sweetalert2__WEBPACK_IMPORTED_MODULE_1___default.a.fire({
+                  icon: 'success',
+                  title: 'El listado ha sido actualizado',
+                  timer: 3000
+                });
+                _context.next = 12;
                 break;
 
-              case 7:
-                _context.prev = 7;
+              case 8:
+                _context.prev = 8;
                 _context.t0 = _context["catch"](0);
                 console.log(_context.t0);
                 sweetalert2__WEBPACK_IMPORTED_MODULE_1___default.a.fire({
@@ -2269,12 +2285,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   text: 'No se pueden cargar los productos'
                 });
 
-              case 11:
+              case 12:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[0, 7]]);
+        }, _callee, null, [[0, 8]]);
       }))();
     }
   }
@@ -48133,7 +48149,7 @@ var render = function() {
                     return _c("tr", { key: order.id }, [
                       _c("td", [_vm._v(_vm._s(order.id))]),
                       _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(order.products.join(",")))]),
+                      _c("td", [_vm._v(_vm._s(order.products.join(", ")))]),
                       _vm._v(" "),
                       _c("td", [_vm._v(_vm._s(order.created_at))])
                     ])
@@ -63481,8 +63497,8 @@ if (token) {
 window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: 'pusher',
-  key: "",
-  cluster: "mt1",
+  key: "800892faa7994d5bfc2a",
+  cluster: "us2",
   forceTLS: true
 });
 
